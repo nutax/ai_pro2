@@ -37,12 +37,18 @@ int median(int *data, int size);
 
 void stats(struct df *df){
     int i;
-    int label_fr[26] = {0};
+    int label_fr[26];
     int pixel_sd[PIXELS], pixel_mean, pixel_sd_mean, pixel_sd_sd, pixel_sd_median;
     
+    for(int i = 0; i<26; i++) label_fr[i] = 0;
     fr(df->label, label_fr, df->size);
+    
+    for(int i = 0; i<26; i++) printf("[%d]%d  ", i, label_fr[i]);
+    printf("\n\n");
+
 
     for(i = 0; i<PIXELS; i++){
+        printf("Pixel %d", i);
         pixel_mean = mean(df->pixel[i], df->size);
         pixel_sd[i] = sd(df->pixel[i], pixel_mean, df->size);
     }
@@ -50,9 +56,7 @@ void stats(struct df *df){
     pixel_sd_mean = mean(pixel_sd, df->size);
     pixel_sd_sd = sd(pixel_sd, pixel_sd_mean, df->size);
     pixel_sd_median = median(pixel_sd, df->size);
-
-    for(int i = 0; i<26; i++) printf("[%d]%d  ", i, label_fr[i]);
-    printf("\n\n");
+    
     printf("SD Mean: %d\n", pixel_sd_mean);
     printf("SD SD: %d\n", pixel_sd_sd);
     printf("SD Median: %d\n", pixel_sd_median);
@@ -81,7 +85,8 @@ int sd(int *data, int mean, int size){
 }
 
 int median(int *data, int size){
-    int buckets[256] = {0}, i;
+    int buckets[256], i;
+    for(i = 0; i < 256; i++) buckets[i] = 0;
     for(i = 0; i < size; i++) buckets[data[i]] += 1;
     for(i = 0; i < 255; i++) buckets[i+1] += buckets[i];
     for(i = 0; i < 256; i++) if(buckets[i]>=(size/2)) break;
