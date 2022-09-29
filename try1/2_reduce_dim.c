@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "0_layout.h"
 
 
@@ -29,7 +30,7 @@ void test_raw(struct sdf *sdf){
 }
 
 
-void fr(int *data, int buckets, int size);
+void fr(int *data, int *buckets, int size);
 int mean(int *data, int size);
 int sd(int *data, int mean, int size);
 int median(int *data, int size);
@@ -55,5 +56,36 @@ void stats(struct df *df){
     printf("SD Mean: %d\n", pixel_sd_mean);
     printf("SD SD: %d\n", pixel_sd_sd);
     printf("SD Median: %d\n", pixel_sd_median);
-
 }
+
+void fr(int *data, int *buckets, int size){
+    int i;
+    for(i = 0; i < size; i++) buckets[data[i]] += 1;
+}
+
+int mean(int *data, int size){
+    int sum, i;
+    sum = 0;
+    for(i = 0; i < size; i++) sum += data[i];
+    return sum / size;
+}
+
+int sd(int *data, int mean, int size){
+    int sum, i, diff;
+    sum = 0;
+    for(i = 0; i < size; i++){
+        diff = data[i] - mean;
+        sum += diff * diff;
+    }
+    return (int)(sqrt(sum/size));
+}
+
+int median(int *data, int size){
+    int buckets[256] = {0}, i;
+    for(i = 0; i < size; i++) buckets[data[i]] += 1;
+    for(i = 0; i < 255; i++) buckets[i+1] += buckets[i];
+    for(i = 0; i < 256; i++) if(buckets[i]>=(size/2)) break;
+    return i;
+}
+
+
