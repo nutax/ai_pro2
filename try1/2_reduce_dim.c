@@ -49,7 +49,7 @@ void stats(struct df *df){
 
     pixel_sd_mean = mean(pixel_sd, df->size);
     pixel_sd_sd = sd(pixel_sd, pixel_sd_mean, df->size);
-    pixel_sd_median = meadian(pixel_sd, df->size);
+    pixel_sd_median = median(pixel_sd, df->size);
 
     for(int i = 0; i<26; i++) printf("[%d]%d  ", i, label_fr[i]);
     printf("\n\n");
